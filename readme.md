@@ -11,7 +11,11 @@ CHARACTERISTIC, A1B2C3D4-E5F6-4A5B-8C9D-0E1F2A3B4C5D, READ | WRITE | DYNAMIC,
 The idea is that you set these just inside the BLE range within your building, to allow bitchat to be used when there
 are not enough devices about to join everyone together.
 
-They should be generally sleeping, only waking up when there are messages to send along.
+They should be generally sleeping, only waking up when there are messages to send along. This means that the heartbeat
+led blinking only works when woken up by there being messages to deliver. To tell if a repeater node is functioning you
+can drag a piece of metal across the bottom quarter of one side to join pins 23(GND) & 24(GP18) which will fire off a
+message into the network 'Sill Alive', and also cause some blinking of the LED. Avoid the top half as you'd be shorting
+the power and the exit to USB for update flashing which can be done by carefully pulling pin 34(GP28) to ground.
 
 Building
 ========
