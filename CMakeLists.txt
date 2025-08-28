@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.5)
+cmake_minimum_required(VERSION 3.13)
 
 set(PICO_BOARD pico_w)  # needed for Pico-W, otherwise #include "pico/cyw43_arch.h" won't be found
 
@@ -12,6 +12,8 @@ include(pico_sdk_import.cmake)
 project(bitchat_repeater C CXX ASM)
 set(CMAKE_C_STANDARD 23)
 set(CMAKE_CXX_STANDARD 23)
+
+add_definitions(-DPICO_ENTER_USB_BOOT_ON_EXIT)
 
 pico_sdk_init()
 
