@@ -177,8 +177,7 @@ std::vector<BleConnection *> BleConnectionTracker::getConnectableNeighbours() {
     const auto now = time_us_64();
     for (auto &connection: available_neighbours | std::views::values) {
         if ((timestamp_offset_ms >= build_time_ms || connection.isRepeater()) &&
-            connection.isConnected() == false &&
-            (!connection.isRandom() || now - connection.getTimestamp() < two_minutes_in_us)) {
+            connection.isConnected() == false && !connection.isRandom()) {
             neighbours.push_back(&connection);
         }
     }
@@ -522,7 +521,13 @@ hci_con_handle_t BleConnectionTracker::getAnyDuplicateHandle() {
     std::map<Peer*, hci_con_handle_t> reversed;
     for (auto &[handle, peer]: handle_peer_map) {
         if (reversed[peer] != 0) {
-            return reversed[peer]; //remove the earlier connection - appears to get gazumped by the more recent one
+            //return the earlier connection - appears to get gazumped by the more recent one
+            LOG_DEBUG(("rp ls: %d, h ls: %d \n"), connections[reversed[peer]].getTimestamp(),
+                      connections[handle].getTimestamp());
+            if (connections[reversed[peer]].getTimestamp() < connections[handle].getTimestamp()) {
+                return reversed[peer];
+            } //else
+            return handle;
         }
         reversed[peer] = handle;
     }
