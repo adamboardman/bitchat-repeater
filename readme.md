@@ -20,19 +20,43 @@ the power and the exit to USB for update flashing which can be done by carefully
 Building
 ========
 
-Note I've only tested this with the PicoW, as the cheaper device it would seem more likely to be used dotted about the
-place as repeaters.
+The Pico_w is perfectly sufficient, and as the cheaper device it would seem more likely to be used dotted about the
+place as repeaters. The Pico2_w can be made to work, but it requires a patch to libdeflate to stop it trying to use neon:
+```
+--- a/lib/arm/cpu_features.h
++++ b/lib/arm/cpu_features.h
+@@ -79,7 +79,7 @@ static inline u32 get_arm_cpu_features(void) { return 0; }
+* r226563 for arm64), hardware floating point support is sufficient.
+  */
+  #if (defined(__GNUC__) || defined(__clang__) || defined(_MSC_VER)) && \
+-       (HAVE_NEON_NATIVE || (GCC_PREREQ(6, 1) && defined(__ARM_FP)))
++       (HAVE_NEON_NATIVE || (GCC_PREREQ(6, 1) && defined(__ARM_FP))) && defined(ARCH_ARM64)
+#  define HAVE_NEON_INTRIN     1
+#  include <arm_neon.h>
+#else
+```
+
+There is probably a better fix but this at least lets you build the project.
 
 Command Line
 ------------
 
-To build on the command line you could type something along the lines of:
+To build on the command line for the Pico_w you could type something along the lines of:
 
 ```
 bitchat-repeater$ mkdir build
 bitchat-repeater$ cd build
 bitchat-repeater/build$ cmake .. -DPICO_SDK_PATH=~/pico-pi/pico-sdk -DPICOTOOL_FETCH_FROM_GIT_PATH=~/pico-pi/picotool
 bitchat-repeater/build$ make
+```
+
+Or for a Pico2_w:
+
+```
+bitchat-repeater$ mkdir build2350
+bitchat-repeater$ cd build2350
+bitchat-repeater/build2350$ cmake .. -DPICO_PLATFORM=rp2350-arm-s -DPICO_SDK_PATH=~/pico-pi/pico-sdk -DPICOTOOL_FETCH_FROM_GIT_PATH=~/pico-pi/picotool
+bitchat-repeater/build2350$ make
 ```
 
 CLion

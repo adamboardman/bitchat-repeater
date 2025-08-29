@@ -4,13 +4,13 @@
 #include <cstring>
 #include <cassert>
 #include <memory>
-#ifdef PICO_RP2040
+#if (PICO_RP2040 || PICO_RP2350)
 // See below #define GUARD_LOCK
 #else
 #include <bits/std_mutex.h>
 #endif
 
-#ifdef PICO_RP2040
+#if (PICO_RP2040 || PICO_RP2350)
 #define GUARD_LOCK
 /**
  * We disable locks for interrupt based systems
@@ -152,7 +152,7 @@ public:
 
 private:
     const T end_item = 0;
-#ifdef PICO_RP2040
+#if (PICO_RP2040 || PICO_RP2350)
     //See above comment - we cannot have mutexes in freeRTOS as we could be within ourselves whilst an interrupt comes in
 #else
     std::mutex mutex;

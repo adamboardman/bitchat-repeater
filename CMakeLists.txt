@@ -1,7 +1,12 @@
 cmake_minimum_required(VERSION 3.13)
 
-set(PICO_BOARD pico_w)  # needed for Pico-W, otherwise #include "pico/cyw43_arch.h" won't be found
+if ("rp2350-arm-s" STREQUAL PICO_PLATFORM)
+    set(PICO_BOARD pico2_w)  # needed for Pico2-W, otherwise #include "pico/cyw43_arch.h" won't be found
+else ()
+    set(PICO_BOARD pico_w)  # needed for Pico-W, otherwise #include "pico/cyw43_arch.h" won't be found
+endif ()
 
+set(CMAKE_POLICY_DEFAULT_CMP0077 NEW)
 set(LIBDEFLATE_BUILD_SHARED_LIB OFF)
 set(LIBDEFLATE_BUILD_GZIP OFF)
 

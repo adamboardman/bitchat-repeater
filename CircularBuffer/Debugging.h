@@ -8,7 +8,7 @@ extern CircularBuffer<char> serialLogBuffer;
 void printAvailableLogging();
 
 #if defined(DEBUG_BUILD)
-#ifdef PICO_RP2040
+#if (PICO_RP2040 || PICO_RP2350)
 #define LOG_DEBUG(...) serialLogBuffer.writeF(__VA_ARGS__);
 #define LOG_INFO(...) serialLogBuffer.writeF(__VA_ARGS__);
 #define LOG_WARN(...) serialLogBuffer.writeF(__VA_ARGS__);

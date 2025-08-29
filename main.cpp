@@ -883,7 +883,9 @@ int main() {
     bi_decl(bi_1pin_with_name(LIFE_CHECK_PIN, "Switch - pull to ground to send a still alive message"));
 
     //reduce_clock(18); //Meshtastic folk have managed to get things working this slow
+#if (PICO_RP2040)
     reduce_clock(63); //slower than this and things get funky in CYW43 land
+#endif
     stdio_init_all();
 
     setup_gpio_callback();
@@ -999,11 +1001,17 @@ int main() {
             connection_tracker.printStats();
             LOG_DEBUG("We can sleep\n");
             printAvailableLogging();
+#if (PICO_RP2040)
             const auto interrupts = *reinterpret_cast<io_rw_32 *>(PPB_BASE + M0PLUS_NVIC_ISER_OFFSET);
+#endif
             const auto time_before = static_cast<uint32_t>(time_us_64() & 0xffffffff);
             __wfi(); //similar power consumption to sleep_ms, but less logging, but also less led flashing
             const auto time_after = static_cast<uint32_t>(time_us_64() & 0xffffffff);
+#if (PICO_RP2040)
             LOG_DEBUG("slept: %" PRIu32 "us, int: 0b%" PRIb32 "\n", time_after - time_before, interrupts);
+#else
+            LOG_DEBUG("slept: %" PRIu32 "us\n", time_after - time_before);
+#endif
             printAvailableLogging();
             slept = true;
             //wfe - 1us sleep
